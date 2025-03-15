@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const transporter = require("../config/mailer");
+const EMAIL_VERIFY_TEMPLATE = require("../config/emailTemplate");
 
 const generateTokenAndSetCookie = (user, res) => {
   const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
@@ -74,7 +75,7 @@ const registerController = async (req, res) => {
       to: newUser.email, // list of receivers
       subject: "Registration Successful", // Subject line
       text: "Welcome to DSolution", // plain text body
-      html: "<b>Welcome to DSolution!</b>",
+      html: EMAIL_VERIFY_TEMPLATE,
     };
 
     try {
