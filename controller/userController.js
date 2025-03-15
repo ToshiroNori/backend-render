@@ -2,6 +2,7 @@ const User = require("../models/User");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const transporter = require("../config/mailer");
 
 const generateTokenAndSetCookie = (user, res) => {
   const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
@@ -66,6 +67,25 @@ const registerController = async (req, res) => {
       password: hashedPassword,
     });
     await newUser.save();
+    console.log(process.env.SMTP_USER);
+
+    const emailOption = {
+      from: "sabado114daryl@gmail.com", // sender address
+      to: newUser.email, // list of receivers
+      subject: "Registration Successful", // Subject line
+      text: "Welcome to DSolution", // plain text body
+      html: "<b>Welcome to DSolution!</b>",
+    };
+
+    try {
+      await transporter.sendMail(emailOption);
+    } catch (error) {
+      console.error("Error sending email:", error);
+      return res
+        .status(400)
+        .json({ message: "Email not sent", error: error.message });
+    }
+
     res.status(201).json({
       id: newUser.id,
       name: newUser.name,
