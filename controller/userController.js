@@ -86,4 +86,17 @@ const userDataController = async (req, res) => {
     res.status(500).json({ message: "Something went wrong" });
   }
 };
-module.exports = { loginController, registerController, userDataController };
+const logoutController = async (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production", // Only secure in production
+    sameSite: "Strict",
+  });
+  res.status(200).json({ message: "Logout successful" });
+};
+module.exports = {
+  loginController,
+  registerController,
+  userDataController,
+  logoutController,
+};
