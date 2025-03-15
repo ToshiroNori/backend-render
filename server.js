@@ -2,6 +2,9 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const userRoutes = require("./routes/userRoutes");
 
 dotenv.config();
 
@@ -16,29 +19,16 @@ mongoose
 
 // Middleware to parse JSON data
 app.use(express.json());
+app.use(cookieParser());
+app.use(
+  cors({
+    credentials: true,
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+  })
+);
 
 // Define a basic route
-app.get("/", (req, res) => {
-  res.send("Hello, this is the backend!");
-});
-
-// Example route to test MongoDB connection
-app.get("/users", async (req, res) => {
-  try {
-    const users = await User.find();
-    res.json(users);
-  } catch (err) {
-    res.status(500).send(err);
-  }
-});
-
-// User Schema and Model
-const userSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-});
-
-const User = mongoose.model("User", userSchema);
+app.use("/api/auth", userRoutes);
 
 // Start the server
 app.listen(port, () => {
