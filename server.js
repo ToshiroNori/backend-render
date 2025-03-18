@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const userRoutes = require("./routes/userRoutes");
+const productRoutes = require("./routes/productRoutes");
 
 dotenv.config();
 
@@ -16,12 +17,13 @@ app.use(cookieParser());
 app.use(
   cors({
     credentials: true,
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: process.env.FRONTEND_URL || "http://localhost:5000",
   })
 );
 
 // Define a basic route
 app.use("/api/auth", userRoutes);
+app.use("/products", productRoutes);
 
 // Start the server
 app.listen(port, () => {

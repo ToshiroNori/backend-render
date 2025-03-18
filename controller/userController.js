@@ -101,6 +101,9 @@ const registerController = async (req, res) => {
 const userDataController = async (req, res) => {
   try {
     const user = await User.findById(req.user);
+    if (!user) {
+      return res.status(204).json({ message: "User not found" });
+    }
     res.status(200).json(user);
   } catch (error) {
     console.error(error);
